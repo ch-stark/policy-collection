@@ -1,0 +1,212 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-gatekeeper-min-replicacount
+  namespace: policies
+  annotations:
+    policy.open-cluster-management.io/standards: NIST, FISMA, NIST-CSF
+    policy.open-cluster-management.io/categories: CM Configuration Management, PR.IP Information Protection Processes and Procedures
+    policy.open-cluster-management.io/controls: CM-2 Baseline Configuration, PR.IP-1 Baseline Configuration
+spec:
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: policy-gatekeeper-contraint-minreplicacount
+      spec:
+        remediationAction: inform
+        severity: low
+        namespaceSelector:
+          exclude:
+            - kube-*
+          include:
+            - default
+        object-templates:
+          - complianceType: mustonlyhave
+            objectDefinition:
+              apiVersion: templates.gatekeeper.sh/v1beta1
+              kind: ConstraintTemplate
+              metadata:
+                name: k8sminreplicacount
+              spec:
+                crd:
+                  spec:
+                    names:
+                      kind: K8sMinReplicaCount
+                    validation:
+                      openAPIV3Schema:
+                        properties:
+                          min:
+                            type: integer
+                targets:
+                  - target: admission.k8s.gatekeeper.sh
+                    rego: >
+                      package k8sminreplicacount
+                      violation[{"msg": msg, "details": {"missing_replicas":
+                      missing}}] {
+                        provided := input.review.object.spec.replicas
+                        required := input.parameters.min
+                        missing := required - provided
+                        missing > 0
+                        msg := sprintf("you must provide %v more replicas", [missing])
+                      }
+        object-templates:
+          - complianceType: mustnothave
+            objectDefinition:
+              apiVersion: templates.gatekeeper.sh/v1beta1
+              kind: ConstraintTemplate
+              metadata:
+                name: k8sminreplicacount
+              spec:
+                crd:
+                  spec:
+                    names:
+                      kind: K8sMinReplicaCount
+                    validation:
+                      openAPIV3Schema:
+                        properties:
+                          min:
+                            type: integer
+                targets:
+                  - target: admission.k8s.gatekeeper.sh
+                    rego: >
+                      package k8sminreplicacount
+                      violation[{"msg": msg, "details": {"missing_replicas":
+                      missing}}] {
+                        provided := input.review.object.spec.replicas
+                        required := input.parameters.min
+                        missing := required - provided
+                        missing > 0
+                        msg := sprintf("you must provide %v more replicas", [missing])
+                      }
+        object-templates:
+          - complianceType: mustnothave
+            objectDefinition:
+              apiVersion: templates.gatekeeper.sh/v1beta1
+              kind: ConstraintTemplate
+              metadata:
+                name: k8sminreplicacount
+              spec:
+                crd:
+                  spec:
+                    names:
+                      kind: K8sMinReplicaCount
+                    validation:
+                      openAPIV3Schema:
+                        properties:
+                          min:
+                            type: integer
+                targets:
+                  - target: admission.k8s.gatekeeper.sh
+                    rego: >
+                      package k8sminreplicacount
+                      violation[{"msg": msg, "details": {"missing_replicas":
+                      missing}}] {
+                        provided := input.review.object.spec.replicas
+                        required := input.parameters.min
+                        missing := required - provided
+                        missing > 0
+                        msg := sprintf("you must provide %v more replicas", [missing])
+                      }
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: policy-gatekeeper-min-replicas
+      spec:
+        remediationAction: inform
+        severity: low
+        namespaceSelector:
+          exclude:
+            - kube-*
+          include:
+            - default
+        object-templates:
+          - complianceType: mustnothave
+            objectDefinition:
+              apiVersion: constraints.gatekeeper.sh/v1beta1
+              kind: K8sMinReplicaCount
+              metadata:
+                name: deployment-must-have-min-replicas
+              spec:
+                match:
+                  kinds:
+                    - apiGroups:
+                        - apps
+                      kinds:
+                        - Deployment
+                    - apiGroups:
+                        - autoscaling
+                      kinds:
+                        - Scale
+                  namespaces:
+                    - deploymenttest
+                parameters:
+                  min: 5
+  - objectDefinition: 
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: policy-gatekeeper-minreplicacount-violations
+      spec:
+        remediationAction: inform
+        severity: low
+        object-templates:
+          - complianceType: musthave
+            objectDefinition:
+              apiVersion: constraints.gatekeeper.sh/v1beta1
+              kind: K8sMinReplicaCount
+              metadata:
+                name: deployment-must-have-min-replicas
+              status:
+                totalViolations: 0
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: policy-gatekeeper-admission-minreplicacount
+      spec:
+        remediationAction: inform
+        severity: low
+        object-templates:
+          - complianceType: mustnothave
+            objectDefinition:
+              apiVersion: v1
+              kind: Event
+              metadata:
+                namespace: openshift-gatekeeper-system
+                annotations:
+                  constraint_action: deny
+                  constraint_kind: K8sMinReplicaCount
+                  constraint_name: deployment-must-have-min-replicas
+                  event_type: violation
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-policy-gatekeeper-min-replicacount
+  namespace: policies
+placementRef:
+  name: placement-policy-gatekeeper-min-replicacount
+  kind: PlacementRule
+  apiGroup: apps.open-cluster-management.io
+subjects:
+- name: policy-gatekeeper-min-replicacount
+  kind: Policy
+  apiGroup: policy.open-cluster-management.io
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  name: placement-policy-gatekeeper-min-replicacount
+  namespace: policies
+spec:
+  clusterConditions:
+  - status: "True"
+    type: ManagedClusterConditionAvailable
+  clusterSelector:
+    matchExpressions:
+      - {key: local-cluster, operator: In, values: ["true"]}
