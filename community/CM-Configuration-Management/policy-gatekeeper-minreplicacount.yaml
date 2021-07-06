@@ -142,22 +142,6 @@ spec:
                 kind: K8sMinReplicaCount
                 metadata:
                   name: deployment-mustnot-have-min-replicas-dryrun
-                spec:
-                  enforcementAction: dryrun
-                  match:
-                    kinds:
-                      - apiGroups:
-                          - apps
-                        kinds:
-                          - Deployment
-                      - apiGroups:
-                          - autoscaling
-                        kinds:
-                          - Scale
-                    namespaces:
-                      - deploymenttest
-                  parameters:
-                    min: 5                                          
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
