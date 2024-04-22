@@ -24,8 +24,6 @@ policies:
     - CA Assessment Authorization and Monitoring
   controls: 
     - CA-7 Continuous Monitoring
-  dependencies:
-    - name: policy-odf
   manifests:
     - path: input-acm-observability/
   remediationAction: enforce  
