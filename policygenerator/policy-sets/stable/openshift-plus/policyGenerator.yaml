@@ -27,26 +27,6 @@ policies:
   manifests:
     - path: input-acm-observability/
   remediationAction: enforce  
-# Observability Policy - end
-# ODF Policies - start
-- name: policy-odf
-  categories:
-    - SI System and Information Integrity
-  controls: 
-    - SI-7 Software Firmware and Information Integrity
-  manifests:
-    - path: input-odf/policy-odf.yaml
-  remediationAction: enforce  
-- name: policy-odf-status
-  categories:
-    - SI System and Information Integrity
-  controls: 
-    - SI-7 Software Firmware and Information Integrity
-  dependencies:
-    - name: policy-odf
-  manifests:
-    - path: input-odf/policy-odf-status.yaml
-  remediationAction: inform
 # ODF Policies - end
   policySets:
     - openshift-plus-clusters
