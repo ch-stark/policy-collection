@@ -12,7 +12,7 @@ policyDefaults:
   namespace: policies
   policySets:
     - openshift-best-practices
-  remediationAction: enforce
+  remediationAction: inform
   severity: medium
   standards:
     - NIST SP 800-53
@@ -33,7 +33,7 @@ policies:
     - AU-3 Content of Audit Records
   manifests:
     - path: input-audit/policy-config-audit.yaml
-  remediationAction: "enforce"
+  remediationAction: "inform"
 #- name: policy-cert-ocp4
 #  categories:
 #    - SC System and Communications Protection
@@ -44,11 +44,11 @@ policies:
 - name: policy-compliance-operator-install
   manifests:
     - path: input-compliance/policy-compliance-operator-install.yaml
-  remediationAction: "enforce"
+  remediationAction: "inform"
 - name: policy-compliance-operator-moderate-scan
   manifests:
     - path: input-compliance/policy-compliance-operator-moderate-scan.yaml
-  remediationAction: "enforce"
+  remediationAction: "inform"
 - name: policy-compliance-operator-moderate-scan-results
   complianceType: "mustnothave"
   manifests:
@@ -57,7 +57,7 @@ policies:
 #- name: policy-etcd-backup
 #  manifests:
 #    - path: input-etcd/policy-etcd-backup.yaml
-#  remediationAction: "enforce"
+#  remediationAction: "inform"
 - name: policy-etcdencryption
   categories:
     - SC System and Communications Protection
@@ -65,7 +65,7 @@ policies:
     - SC-28 Protection Of Information At Rest
   manifests:
     - path: input-etcd/policy-etcdencryption.yaml
-  remediationAction: "enforce"
+  remediationAction: "inform"
 - name: policy-file-integrity-operator
   categories:
     - SC System and Communications Protection
@@ -73,7 +73,7 @@ policies:
     - SC-28 Protection Of Information At Rest
   manifests:
     - path: input-files/policy-file-integrity-operator.yaml
-  remediationAction: "enforce"
+  remediationAction: "inform"
 - name: policy-file-integrity-node-status
   complianceType: "mustnothave"
   categories:
