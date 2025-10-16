@@ -1,4 +1,4 @@
-apiVersion: policy.open-cluster-management.io/v1
+-apiVersion: policy.open-cluster-management.io/v1
 kind: PolicyGenerator
 metadata:
   name: policy-openshift-best-practices
@@ -9,7 +9,7 @@ policyDefaults:
     - CM Configuration Management
   controls: 
     - CM-2 Baseline Configuration
-  namespace: policies
+  namespace: demo-policies
   policySets:
     - openshift-best-practices
   remediationAction: inform
