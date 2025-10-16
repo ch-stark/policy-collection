@@ -5,10 +5,7 @@ metadata:
   namespace: demo-policies
 spec:
   predicates:
-    - requiredClusterSelector:
-        labelSelector:
-          matchExpressions:
-            - key: openstack
-              operator: In
-              values:
-                - 'true'
+  - requiredClusterSelector:
+      labelSelector:
+        matchExpressions:
+          - {key: enviroment, operator: In, values: ["openstack"]}
